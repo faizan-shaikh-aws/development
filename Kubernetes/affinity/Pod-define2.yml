@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata: 
+  name: red
+  labels: 
+    type: binding
+
+spec: 
+  contianers: 
+  - name: red
+    image: nginx
+  
+  affinity: 
+    nodeAffinity: 
+      requiredDuringSchedulingIgnoredDuringExecution: 
+        nodeSelectorTerms: 
+        - matchLables: 
+          - key: node-role.kubernetes.io/master
+            operator: Exists

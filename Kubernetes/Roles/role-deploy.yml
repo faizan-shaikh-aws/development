@@ -1,0 +1,10 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: role-deploy
+  namespace: blue
+
+rules:
+- apiGroups: ["apps", "extension"]
+  resources: ["deployments"]
+  verbs: ["create"]

@@ -1,0 +1,22 @@
+# Setting the Haproxy
+
+frontend kubernetes-frontend
+    bind 172.31.0.116:6443
+    mode tcp
+    option tcplog
+    default_backend kubernetes-backend
+
+backend kubernetes-backend
+    mode tcp
+    option tcp-check
+    balance roundrobin
+    server master1 172.31.4.1:6443 check fall 3 rise 2
+    server master2 172.31.4.94:6443 check fall 3 rise 2
+
+
+====================
+setsebool -P haproxy_connect_any=1
+
+I would guess this is a SELinux issue. Try setenforce 0, then restart the HAProxy service. If HAProxy works after this change, restore the enforcing status with setenforce 1, and then run setsebool -P haproxy_connect_any to change the SELinux boolean that is probably affecting this, and restart the service again.
+
+
