@@ -1,0 +1,69 @@
+services:
+  kafka-connect:
+    build: .
+    env_file: .env
+    environment:
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+
+      # Confluent Cloud Configuration
+      CONNECT_BOOTSTRAP_SERVERS: ${CCLOUD_BROKER_URL}
+      CONNECT_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_SASL_MECHANISM: PLAIN
+      CONNECT_SASL_JAAS_CONFIG: '${CCLOUD_JAAS_CONFIG}'
+
+      # Worker Configuration
+      CONNECT_GROUP_ID: kafka-connect-group
+      CONNECT_CONFIG_STORAGE_TOPIC: _kafka-connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: _kafka-connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: _kafka-connect-status
+
+      # Converters
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+
+      # Producer/Consumer Security
+      CONNECT_PRODUCER_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_PRODUCER_SASL_MECHANISM: PLAIN
+      CONNECT_PRODUCER_SASL_JAAS_CONFIG: '${CCLOUD_JAAS_CONFIG}'
+
+      CONNECT_CONSUMER_SECURITY_PROTOCOL: SASL_SSL
+      CONNECT_CONSUMER_SASL_MECHANISM: PLAIN
+      CONNECT_CONSUMER_SASL_JAAS_CONFIG: '${CCLOUD_JAAS_CONFIG}'
+
+      # Plugin and Networking
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_REST_PORT: 8083
+
+    ports:
+      - "8083:8083"
+    networks:
+      - shared-network
+    depends_on:
+      - ibm-mq
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8083/connectors || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  ibm-mq:
+    image: ibmcom/mq:latest
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=${MQ_QMGR}
+      - MQ_APP_PASSWORD=${MQ_PASSWORD}
+      - MQ_USER=${MQ_USER}
+    networks:
+      - shared-network
+    healthcheck:
+      test: ["CMD", "/opt/mqm/samp/bin/amqping", "-m", "${MQ_QMGR}", "-c", "DEV.APP.SVRCONN"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+networks:
+  shared-network:
+    driver: bridge
