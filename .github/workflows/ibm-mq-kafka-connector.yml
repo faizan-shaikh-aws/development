@@ -3,29 +3,28 @@ name: Deploy IBM MQ Connector
 on:
   workflow_dispatch:
 
-
 jobs:
   deploy:
     name: Deploy IBM MQ Connector
     runs-on: ubuntu-latest
-  
-  defaults:
+    
+    defaults:
       run:
         working-directory: ./IBM-MQ-Connector
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Build Docker Compose
-      run: |
-        docker-compose build --no-cache
+      - name: Build Docker Compose
+        run: |
+          docker-compose build --no-cache
 
-    - name: Start Docker Compose services
-      run: |
-        docker-compose up -d
+      - name: Start Docker Compose services
+        run: |
+          docker-compose up -d
 
-    - name: Check deployment
-      run: |
-        docker-compose ps -a
-        curl http://0.0.0.0:8083/connectors/
+      - name: Check deployment
+        run: |
+          docker-compose ps -a
+          curl http://0.0.0.0:8083/connectors/
