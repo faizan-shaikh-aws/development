@@ -36,3 +36,7 @@ RUN chmod -R 775 /opt/mqm/java/lib && \
     chown -R appuser:appuser /opt/mqm
 
 USER appuser
+
+# Automatically register the connector
+CMD ["sh", "-c", "connect-distributed /etc/kafka-connect/worker.properties && \
+                   curl -X POST -H \"Content-Type: application/json\" --data @/etc/kafka-connect/custom-config/ibm-mq-source.json http://localhost:8083/connectors"]
