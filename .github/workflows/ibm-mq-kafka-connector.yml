@@ -31,7 +31,7 @@ jobs:
       - name: Sleep for 5 min
         run: |
           echo "Waiting for services to initialize..."
-          sleep 300
+          sleep 600
       
       - name: Check Worker Status
         run: |
