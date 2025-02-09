@@ -33,16 +33,18 @@ jobs:
           echo "Waiting for services to initialize..."
           sleep 300
       
-      - name: Check Connector List
+      - name: Delete Connector
         run: |
           curl -X DELETE http://localhost:8083/connectors/ibm-mq-source-connector
-          curl http://0.0.0.0:8083/connectors/
       
       - name: Sleep for 2 min
         run: |
           echo "Waiting for services to initialize..."
           sleep 120
-          
+      
+      - name: Check Connector List
+        run: |
+          curl http://0.0.0.0:8083/connectors/
       
       - name: Add Messages to IBM MQ
         run: |
@@ -54,10 +56,9 @@ jobs:
             curl -X POST -H "Content-Type: application/json" --data @config/ibm-mq-source.json http://localhost:8083/connectors && break || sleep 10
           done
       
-      - name: Check Connector List & Logs
+      - name: Check Connector List & Status
         run: |
           curl http://0.0.0.0:8083/connectors/
-          docker logs ibm-mq-connector-kafka-connect-1 | egrep -i "initialization and start"
           curl http://0.0.0.0:8083/connectors/ibm-mq-source-connector/status
 
       - name: Sleep for 3 min
