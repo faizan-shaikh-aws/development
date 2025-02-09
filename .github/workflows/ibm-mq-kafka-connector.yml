@@ -27,4 +27,27 @@ jobs:
       - name: Check deployment
         run: |
           docker compose ps -a
+
+      - name: Sleep for 3 min
+        run: |
+          echo "Waiting for services to initialize..."
+          sleep 180
+      
+      - name: Check Connector List
+        run: |
           curl http://0.0.0.0:8083/connectors/
+      
+      - name: Add Messages to IBM MQ
+        run: |
+          docker exec -i ibm-mq-connector-ibm-mq-1 bash -c "echo '{\"payload\": \"Hello from IBM MQ\"}' | /opt/mqm/samp/bin/amqsput DEV.QUEUE.1 QM1"
+      
+      - name: POST IBM config to connector
+        run: |
+          curl -X POST -H "Content-Type: application/json" --data @config/ibm-mq-source.json  http://localhost:8083/connectors
+      
+      - name: Check Connector List
+        run: |
+          curl http://0.0.0.0:8083/connectors/
+
+      - name: Sleep for 3 min
+        run: sleep 180

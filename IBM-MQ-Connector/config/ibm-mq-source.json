@@ -11,7 +11,7 @@
     "mq.user.name": "app",
     "mq.password": "passw0rd",
 
-    "topic": "mh90",
+    "topic": "edl0",
     "key.converter": "org.apache.kafka.connect.storage.StringConverter",
     "value.converter": "org.apache.kafka.connect.storage.StringConverter",
 
