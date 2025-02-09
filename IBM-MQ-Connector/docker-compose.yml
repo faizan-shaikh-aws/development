@@ -34,11 +34,6 @@ services:
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_REST_PORT: 8083
 
-      # Path to custom configuration
-      CONNECT_CONFIG_DIR: /etc/kafka-connect/custom-config
-
-    volumes:
-      - ./config:/etc/kafka-connect/custom-config # Mount your config directory
     ports:
       - "8083:8083"
     networks:
