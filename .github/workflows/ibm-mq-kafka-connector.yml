@@ -28,14 +28,15 @@ jobs:
         run: |
           docker compose ps -a
 
-      - name: Sleep for 3 min
+      - name: Sleep for 5 min
         run: |
           echo "Waiting for services to initialize..."
-          sleep 180
+          sleep 300
       
       - name: Check Connector List
         run: |
           curl http://0.0.0.0:8083/connectors/
+          curl -X DELETE http://localhost:8083/connectors/ibm-mq-source-connector
       
       - name: Add Messages to IBM MQ
         run: |
@@ -43,7 +44,9 @@ jobs:
       
       - name: POST IBM config to connector
         run: |
-          curl -X POST -H "Content-Type: application/json" --data @config/ibm-mq-source.json  http://localhost:8083/connectors
+          for i in {1..5}; do
+            curl -X POST -H "Content-Type: application/json" --data @config/ibm-mq-source.json http://localhost:8083/connectors && break || sleep 10
+          done
       
       - name: Check Connector List
         run: |
