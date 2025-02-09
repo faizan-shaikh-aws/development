@@ -24,7 +24,7 @@ jobs:
         run: |
           docker compose up -d
 
-      - name: Check deployment
+      - name: Check deployment 1
         run: |
           docker compose ps -a
 
@@ -33,6 +33,10 @@ jobs:
           echo "Waiting for services to initialize..."
           sleep 720
       
+      - name: Check deployment 2
+        run: |
+          docker compose ps -a
+
       - name: Check Worker Status
         run: |
           echo "Checking Kafka Connect worker status..."
