@@ -18,8 +18,5 @@
     "mq.message.body.jms": "true",
     "mq.record.builder": "com.ibm.eventstreams.connect.mqsource.builders.DefaultRecordBuilder",
 
-    "producer.override.security.protocol": "SASL_SSL",
-    "producer.override.sasl.mechanism": "PLAIN",
-    "producer.override.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"HR7TAQ2BUMBYORKM\" password=\"b2HjwO2W1UvTzD5g60oR8QCezOQlEr4QwNuR9l/XYqH+fStfpYkkc4HTNWIMRHch\";"
   }
 }
